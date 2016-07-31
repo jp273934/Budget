@@ -19,6 +19,11 @@ namespace ParrisBudget
         {
             InitializeComponent();
 
+            LoadBudget();
+        }
+
+        private void LoadBudget()
+        {
             Budget budget = Data.GetBudget();
 
             AndreasIncomeTextBox.Text = budget.AndreasIncome.ToString();
@@ -26,6 +31,20 @@ namespace ParrisBudget
             RentIncomeTextBox.Text = budget.RentIncome.ToString();
             RentExpenseTextBox.Text = budget.RentExpense.ToString();
             MortgageTextBox.Text = budget.Mortage.ToString();
+            CigarettesTextBox.Text = budget.Cigarettes.ToString();
+            ElectricityTextBox.Text = budget.Electricity.ToString();
+            CarInsuranceTextBox.Text = budget.CarInsurance.ToString();
+            DishBillTextBox.Text = budget.DishBill.ToString();
+            PhoneBillTextBox.Text = budget.PhoneBill.ToString();
+            WaterBillTextBox.Text = budget.WaterBill.ToString();
+            CarGasTextBox.Text = budget.GasCar.ToString();
+            TruckGasTextBox.Text = budget.GasTruck.ToString();
+            HealthInsuranceTextBox.Text = budget.HealthInsurance.ToString();
+            InternetTextBox.Text = budget.Internet.ToString();
+            GroceriesTextBox.Text = budget.Groceries.ToString();
+            GymTextBox.Text = budget.Gym.ToString();
+            DebtTextBox.Text = budget.Debt.ToString();
+
             IncomeTotalLabel.Text = budget.IncomeTotal.ToString("c2");
             ExpenseTotalLabel.Text = budget.ExpenseTotal.ToString("c2");
             BalanceLabel.Text = budget.Balance.ToString("c2");
@@ -36,41 +55,41 @@ namespace ParrisBudget
             this.Close();
         }
 
-        private void TextBox_Leave(object sender, EventArgs e)
+        private double GetDollarAmount(TextBox box)
         {
-            double andreaIncome = 0;
-            double jeremyIncome = 0;
-            double rentIncome = 0;
-            double rentExpense = 0;
-            double mortgage = 0;
+            double amount = 0;
 
-            if (!string.IsNullOrWhiteSpace(AndreasIncomeTextBox.Text))
+            if (!string.IsNullOrWhiteSpace(box.Text))
             {
-                double.TryParse(AndreasIncomeTextBox.Text, out andreaIncome);
+                double.TryParse(box.Text, out amount);
             }
 
-            if (!string.IsNullOrWhiteSpace(JeremysIncomeTextBox.Text))
-            {
-                double.TryParse(JeremysIncomeTextBox.Text, out jeremyIncome);
-            }
+            return amount;
+        }
 
-            if (!string.IsNullOrWhiteSpace(RentIncomeTextBox.Text))
-            {
-                double.TryParse(RentIncomeTextBox.Text, out rentIncome);
-            }
-
-            if (!string.IsNullOrWhiteSpace(RentExpenseTextBox.Text))
-            {
-                double.TryParse(RentExpenseTextBox.Text, out rentExpense);
-            }
-
-            if (!string.IsNullOrWhiteSpace(MortgageTextBox.Text))
-            {
-                double.TryParse(MortgageTextBox.Text, out mortgage);
-            }
-
+        private void TextBox_Leave(object sender, EventArgs e)
+        {           
+            double andreaIncome = GetDollarAmount(AndreasIncomeTextBox);
+            double jeremyIncome = GetDollarAmount(JeremysIncomeTextBox);
+            double rentIncome = GetDollarAmount(RentIncomeTextBox);
+            double rentExpense = GetDollarAmount(RentExpenseTextBox);
+            double mortgage = GetDollarAmount(MortgageTextBox);
+            double cigarettes = GetDollarAmount(CigarettesTextBox);
+            double electrictiy = GetDollarAmount(ElectricityTextBox);
+            double carInsurance = GetDollarAmount(CarInsuranceTextBox);
+            double dishBill = GetDollarAmount(DishBillTextBox);
+            double phoneBill = GetDollarAmount(PhoneBillTextBox);
+            double waterBill = GetDollarAmount(WaterBillTextBox);
+            double carGas = GetDollarAmount(CarGasTextBox);
+            double truckGas = GetDollarAmount(TruckGasTextBox);
+            double healthInsurance = GetDollarAmount(HealthInsuranceTextBox);
+            double internet = GetDollarAmount(InternetTextBox);
+            double groceries = GetDollarAmount(GroceriesTextBox);
+            double gym = GetDollarAmount(GymTextBox);
+            double debt = GetDollarAmount(DebtTextBox);
+          
             var incomeTotal = andreaIncome + jeremyIncome + rentIncome;
-            var expenseTotal = rentExpense + mortgage;
+            var expenseTotal = rentExpense + mortgage + cigarettes + electrictiy + carInsurance + dishBill + phoneBill + waterBill + carGas + truckGas + healthInsurance + internet + groceries + gym + debt;
             var balance = incomeTotal - expenseTotal;
 
             IncomeTotalLabel.Text = incomeTotal.ToString("c2");
@@ -86,8 +105,25 @@ namespace ParrisBudget
                 JeremysIncome = Convert.ToDouble(JeremysIncomeTextBox.Text),
                 RentIncome = Convert.ToDouble(RentIncomeTextBox.Text),
                 RentExpense = Convert.ToDouble(RentExpenseTextBox.Text),
-                Mortage = Convert.ToDouble(MortgageTextBox.Text)
+                Mortage = Convert.ToDouble(MortgageTextBox.Text),
+                Cigarettes = Convert.ToDouble(CigarettesTextBox.Text),
+                Electricity = Convert.ToDouble(ElectricityTextBox.Text),
+                CarInsurance = Convert.ToDouble(CarInsuranceTextBox.Text),
+                DishBill = Convert.ToDouble(DishBillTextBox.Text),
+                PhoneBill = Convert.ToDouble(PhoneBillTextBox.Text),
+                WaterBill = Convert.ToDouble(WaterBillTextBox.Text),
+                GasCar = Convert.ToDouble(CarGasTextBox.Text),
+                GasTruck = Convert.ToDouble(TruckGasTextBox.Text),
+                HealthInsurance = Convert.ToDouble(HealthInsuranceTextBox.Text),
+                Internet = Convert.ToDouble(InternetTextBox.Text),
+                Groceries = Convert.ToDouble(GroceriesTextBox.Text),
+                Gym = Convert.ToDouble(GymTextBox.Text),
+                Debt = Convert.ToDouble(DebtTextBox.Text)
             };
+
+            Data.SaveBudget(budget);
+
+            LoadBudget();
         }
     }
 }
