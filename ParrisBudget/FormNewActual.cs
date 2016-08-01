@@ -15,17 +15,20 @@ namespace ParrisBudget
         public FormNewActual()
         {
             InitializeComponent();
-            Budget budget = Data.GetBudget();
-            AndreasIncomeLabel.Text = budget.AndreasIncome.ToString("c2");
-            JeremysIncomeLabel.Text = budget.JeremysIncome.ToString("c2");
-            RentIncomeActualLabel.Text = budget.RentIncome.ToString("c2");
-            RentExpenseLabel.Text = budget.RentExpense.ToString("c2");
-            MortgageLabel.Text = budget.Mortage.ToString("c2");
+            MonthYearDatePicker.Format = DateTimePickerFormat.Custom;
+            MonthYearDatePicker.CustomFormat = "MMMM yyyy";
         }
 
         private void CloseButton_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void CreateButton_Click(object sender, EventArgs e)
+        {            
+            Data.CreateNewActual(MonthYearDatePicker.Value);
+            FormMain mainForm = new FormMain();
+            mainForm.LoadActualHistory();
         }
     }
 }

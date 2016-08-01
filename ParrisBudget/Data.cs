@@ -54,6 +54,46 @@ namespace ParrisBudget
             return budget[0];
         }
 
+        public static List<Actual> GetAllActual()
+        {
+            List<Actual> actual = new List<Actual>();
+
+            using (SqlConnection connection = new SqlConnection(BudgetConnection))
+            {
+                connection.Open();
+                SqlCommand sqlCmd = new SqlCommand("SELECT * FROM Actual");
+                sqlCmd.Connection = connection;
+                SqlDataReader reader = sqlCmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    var item = new Actual
+                    {
+                        Id = Convert.ToInt32(reader["Id"]),
+                        Month = Convert.ToDateTime(reader["Month"]),
+                        AndreaIncome = reader["AndreaIncome"] is DBNull ? 0 : Convert.ToDouble(reader["AndreaIncome"]),
+                        JeremyIncome = reader["JeremyIncome"] is DBNull ? 0 : Convert.ToDouble(reader["JeremyIncome"]),
+                        RentIncome = reader["RentIncome"] is DBNull ? 0 : Convert.ToDouble(reader["RentIncome"]),
+                        RentExpense = reader["RentExpense"] is DBNull ? 0 : Convert.ToDouble(reader["RentExpense"]),
+                        Mortgage = reader["Mortgage"] is DBNull ? 0 : Convert.ToDouble(reader["Mortgage"]),
+                        Electricity = reader["Electricity"] is DBNull ? 0 : Convert.ToDouble(reader["Electricity"]),
+                        CarInsurance = reader["CarInsurance"] is DBNull ? 0 : Convert.ToDouble(reader["CarInsurance"]),
+                        DishBill = reader["DishBill"] is DBNull ? 0 : Convert.ToDouble(reader["DishBill"]),
+                        PhoneBill = reader["PhoneBill"] is DBNull ? 0 : Convert.ToDouble(reader["PhoneBill"]),
+                        WaterBill = reader["WaterBill"] is DBNull ? 0 : Convert.ToDouble(reader["WaterBill"]),
+                        HealthInsurance = reader["HealthInsurance"] is DBNull ? 0 : Convert.ToDouble(reader["HealthInsurance"]),
+                        Internet = reader["Internet"] is DBNull ? 0 : Convert.ToDouble(reader["Internet"]),
+                        Gym = reader["Gym"] is DBNull ? 0 : Convert.ToDouble(reader["Gym"]),
+                        Debt = reader["Debt"] is DBNull ? 0 : Convert.ToDouble(reader["Debt"])
+                    };
+
+                    actual.Add(item);
+                }
+            }
+
+            return actual;
+        } 
+
         public static void SaveBudget(Budget _budget)
         {
             using (SqlConnection connection = new SqlConnection(BudgetConnection))
@@ -80,6 +120,38 @@ namespace ParrisBudget
                 command.Parameters.AddWithValue("@gym", _budget.Gym);
                 command.Parameters.AddWithValue("@debt", _budget.Debt);
                 command.Parameters.AddWithValue("@cigs", _budget.Cigarettes);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+        public static void CreateNewActual(DateTime acutalMonth)
+        {
+            using (SqlConnection connection = new SqlConnection(BudgetConnection))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                command.CommandText = "INSERT INTO Actual (Month) VALUES (@month)";
+                command.Parameters.AddWithValue("@month", acutalMonth);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+        public static void UpdateIncome(Actual actual)
+        {
+            using (SqlConnection connection = new SqlConnection(BudgetConnection))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                command.CommandText =
+                    "UPDATE Actual SET AndreaIncome = @aIncome, JeremyIncome = @jIncome, RentIncome = @rIncome Where Id= @id";
+                command.Parameters.AddWithValue("@id", actual.Id);
+                command.Parameters.AddWithValue("@aIncome", actual.AndreaIncome);
+                command.Parameters.AddWithValue("@jIncome", actual.JeremyIncome);
+                command.Parameters.AddWithValue("@rIncome", actual.RentIncome);
 
                 connection.Open();
                 command.ExecuteNonQuery();
